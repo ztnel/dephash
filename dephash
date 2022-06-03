@@ -1,0 +1,68 @@
+#!/bin/bash
+
+## Usage: dephash [OPTION]... [FILE]... 
+##
+## dephash generates a unique hash for a subset of version controlled dependancy
+## files in order to generate a unique tag for creating application base 
+## and using them permissively without causing dependancy conflicts
+## 
+## Options:
+##   -h, --help    Display this message.
+##   -f            Input dependancy files
+##
+
+set -e
+trap 'handler $?' ERR
+
+usage() {
+    echo "Usage: dephash [OPTION]... [FILE]..."
+    echo "Print merged MD5 (128-bit) checksums of multiple input files"
+    echo ""
+    echo "Options:"
+    echo "  -h      Display this message"
+    echo "  -f      Input dependancy files"
+    echo ""
+    echo "Example:"
+    echo "  ./dephash -f requirements.txt -f apt-packages.txt"
+}
+
+parse_md5sum() {
+    echo "$@" | cut -f 1 -d ' ' | tr -d '\n'
+}
+
+handler() {
+    exit "$1"
+}
+
+files=()
+
+while getopts ":h:f:" opt; do
+    case "$opt" in
+        h )
+            usage
+            exit 0
+            ;;
+        f )
+            files+="$OPTARG "
+            ;;
+        \? )
+            echo "Invalid option: $OPTARG" 1>&2
+            exit 1
+            ;;
+        : )
+            echo "Invalid option: $OPTARG requires an argument" 1>&2
+            exit 1
+            ;;
+    esac
+done
+
+shift $((OPTIND -1))
+
+if [ -z "$files" ]; then
+    usage
+    exit 1
+fi
+
+md5_out=`md5sum $files`
+merged_md5sum=$(echo `parse_md5sum "$md5_out"` | md5sum)
+echo `parse_md5sum "$merged_md5sum"`
