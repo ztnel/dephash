@@ -2,7 +2,7 @@
 
 Modified: 2022-05
 
-Generate a unique md5 hash for a subset of version controlled dependancy files. This has application in building base images where the images can be tagged with a hash of all version controlled application dependancy files. This provides an elegant way to solve dependancy conflicts across multiple concurrent development source branches.
+Generate a unique md5 hash for a subset of version controlled dependancy files. This has application in building base images where the images can be tagged with a hash of all version controlled application dependancy files. This provides an elegant way to solve dependancy conflicts across multiple concurrent development source branches. Credit to [kschinkel](https://github.com/kschinkel) for the idea.
 
 > `md5sum` is used to hash input files. `man md5sum` for more information on the `md5sum` utility
 
